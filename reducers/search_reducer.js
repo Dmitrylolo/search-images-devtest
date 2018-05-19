@@ -1,3 +1,4 @@
+import { REHYDRATE } from 'redux-persist';
 import {
 	TERM_CHANGED,
 	COLUMNS_CHANGED,
@@ -13,6 +14,8 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
 	console.log(action);
 	switch (action.type) {
+		case REHYDRATE:
+			return action.payload.search && action.payload ? action.payload.search : [];
 		case TERM_CHANGED:
 			return { ...state, term: action.payload };
 		case COLUMNS_CHANGED:

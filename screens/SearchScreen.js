@@ -18,7 +18,7 @@ class SearchScreen extends Component {
 							backgroundColor="rgba(0, 0, 0, 0)"
 							color="rgba(0, 122, 255, 1)"
 						/>
-				)
+				),
 			};
 	}
 
@@ -69,15 +69,17 @@ class SearchScreen extends Component {
 					</View>
 					<Text style={styles.columnText}>{this.props.columns}</Text>
 				</View>
-				<Button 
-					large
-					title="Search"
-					onPress={this.onButtonPress}
-					backgroundColor="transparent"
-					color="rgb(255, 255, 255)"
-					textStyle={{ fontSize: 24 }}
-					icon={{ name: 'search' }}
-				/>
+				<View style={styles.searchButtonStyle}>
+					<Button 
+						title="Search"
+						onPress={this.onButtonPress}
+						backgroundColor="#009688"
+						color="rgb(255, 255, 255)"
+						textStyle={{ fontSize: 24 }}
+						icon={{ name: 'search' }}
+						loadingRight={false}
+					/>
+				</View>
 			</View>
 		);
 	}
@@ -119,6 +121,21 @@ const styles = {
 		fontSize: 16, 
 		alignSelf: 'center',
 		color: 'rgb(255, 255, 255)' 
+	},
+	searchButtonStyle: {
+		padding: 6,
+		borderColor: '#FFF',
+		borderRadius: 9,
+		borderWidth: 1,
+		borderStyle: 'dotted',
+		margin: 12,
+		elevation: 2,
+		shadowRadius: 2,
+		shadowColor: 'darkgrey',
+		textShadowOffset: {
+			width: 1,
+			height: 2
+		}
 	}
 };
 

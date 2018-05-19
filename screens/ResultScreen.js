@@ -53,8 +53,6 @@ const mapStateToProps = ({ search }) => {
 	return { columns, images };
 };
 
-
-
 const styles = {
 	imgStyle: { 
 		borderWidth: 1, 

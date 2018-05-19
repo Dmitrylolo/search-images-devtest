@@ -1,13 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from './store';
+import { PersistGate } from 'redux-persist/integration/react';
+import configureStore from './store';
 import Navigation from './Navigation';
+
+const { persistor, store } = configureStore();
 
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <Navigation />
+        <PersistGate loading={null} persistor={persistor}>
+          <Navigation />
+        </PersistGate>
       </Provider>
     );
   }

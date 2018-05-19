@@ -25,6 +25,27 @@ const buildSearchUrl = term => {
 	return `${SEARCH_ROOT_URL}${query}`;
 };
 
+const getImagesFromHTML = (data) => {
+	const start = data.indexOf(RESULT_START_TAG, 0);
+	if (start === -1) {
+		return [];
+	}
+
+	const end = data.indexOf(RESULT_END_TAG, start);
+	const imagesTable = data.slice(start, end + LENGTH_END_TAG);
+	let startPos = -1;
+	let id = 0;	
+	const images = [];
+	while ((startPos = imagesTable.indexOf(IMG_START_SRC_ATTR, startPos + 1)) !== -1) {
+		const endPos = imagesTable.indexOf(IMG_END_SRC_ATTR, startPos + IMG_START_SRC_ATTR_LENGTH);
+		const imgSrc = imagesTable.slice(startPos + IMG_START_SRC_ATTR_LENGTH, endPos);
+		const image = { id, src: imgSrc };
+		images.push(image);
+		id++;
+	}
+	return images;
+};
+
 export const termChanged = text => {
 	return {
 		type: TERM_CHANGED,
@@ -44,25 +65,13 @@ export const loadResult = (term, navigate) => async dispatch => {
 		const url = buildSearchUrl(term);
 
 		const { data } = await axios.get(url);
-		const start = data.indexOf(RESULT_START_TAG, 0);
-		if (start === -1) {
+		const images = getImagesFromHTML(data);
+
+		if (images.length === 0) {
 			dispatch({ type: FETCH_RESULT, payload: [] });
 			navigate();
 		} else {
-			const end = data.indexOf(RESULT_END_TAG, start);
-			const imagesTable = data.slice(start, end + LENGTH_END_TAG);
-			let startPos = -1;
-			let id = 0;	
-			const images = [];
-			while ((startPos = imagesTable.indexOf(IMG_START_SRC_ATTR, startPos + 1)) !== -1) {
-				const endPos = imagesTable.indexOf(IMG_END_SRC_ATTR, startPos + IMG_START_SRC_ATTR_LENGTH);
-				const imgSrc = imagesTable.slice(startPos + IMG_START_SRC_ATTR_LENGTH, endPos);
-				const image = { id, src: imgSrc };
-				images.push(image);
-				id++;
-			}
 			dispatch({ type: FETCH_RESULT, payload: images });
-			console.log('we are here');
 			navigate();
 		}
 	} catch (e) {
