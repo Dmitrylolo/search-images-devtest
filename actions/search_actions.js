@@ -4,7 +4,7 @@ import {
 	TERM_CHANGED,
 	COLUMNS_CHANGED,
 	FETCH_RESULT,
-	CLEAR_IMAGES
+	LOADING
 } from './types';
 
 const SEARCH_ROOT_URL = 'https://www.google.com/search?';
@@ -62,11 +62,13 @@ export const columnsChanged = text => {
 };
 
 export const loadResult = (term, navigate) => async dispatch => {
-	try {		
-		//await dispatch({ type: CLEAR_IMAGES });
+	dispatch({ type: LOADING });
+	try {			
 		const url = buildSearchUrl(term);
-		const { data } = await axios.get(url);
-		const images = getImagesFromHTML(data);
+		const html = await axios.get(url);
+		const images = getImagesFromHTML(html.data);
+		console.log(html);
+
 
 		if (images.length === 0) {
 			dispatch({ type: FETCH_RESULT, payload: [] });

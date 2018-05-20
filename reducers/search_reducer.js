@@ -42,7 +42,8 @@ import { REHYDRATE } from 'redux-persist';
 import {
 	TERM_CHANGED,
 	COLUMNS_CHANGED,
-	FETCH_RESULT
+	FETCH_RESULT,
+	LOADING
 } from '../actions/types';
 
 const NO_RESULT = 'Nothing to show. :(';
@@ -52,6 +53,7 @@ const INITIAL_STATE = {
 	columns: 1,
 	images: [],
 	errorText: 'Nothing to show. :(',
+	loading: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -64,7 +66,9 @@ export default (state = INITIAL_STATE, action) => {
 		case COLUMNS_CHANGED:
 			return { ...state, columns: action.payload };
 		case FETCH_RESULT:
-			return { ...state, images: action.payload };
+			return { ...state, images: action.payload, loading: false };
+		case LOADING:
+			return { ...state, loading: true };
 		default:
 		return state;
 	}

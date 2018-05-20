@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Switch } from 'react-native';
-import { Button, SearchBar, Slider } from 'react-native-elements';
+import { View, Text, Switch, TextInput } from 'react-native';
+import { Button, Slider } from 'react-native-elements';
 import { termChanged, columnsChanged, loadResult } from '../actions';
 
 class SearchScreen extends Component {
@@ -25,7 +25,7 @@ class SearchScreen extends Component {
 						fontSize={16}
 					/>
 			),
-			headerTransparent: true
+			headerTransparent: true,
 		};
 	}
 
@@ -40,6 +40,7 @@ class SearchScreen extends Component {
 	}
 
 	componentWillMount() {
+		console.log(this.state.errorStatus);
 	}
 
 
@@ -54,7 +55,7 @@ class SearchScreen extends Component {
 		this.props.columnsChange(columns);
 	}
 
-	onButtonPress = () => {
+	onSubmit = () => {
 		if (this.props.term.length === 0) {
 			this.setState({ errorStatus: true });
 			return null;
@@ -72,14 +73,13 @@ class SearchScreen extends Component {
 			return null;
 		}
 		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000' });
-		
 	}
 
 	renderError = () => {
-		console.log(this.state);
+		
 		if (this.state.errorStatus) {
 			return (
-				<Text style={styles.errorStyle}>
+				<Text style={[styles.errorStyle, { color: this.state.secondColor }]}>
 					You forgot to type something in the field bottom. :)
 				</Text>
 			);
@@ -89,64 +89,68 @@ class SearchScreen extends Component {
 
 	render() {
 		return (
-			<View style={[styles.containerStyle, { backgroundColor: this.state.firstColor }]}>
-				{this.renderError()}
-				<View style={styles.termContainer}>
-					<Text style={[styles.termText, { color: this.state.secondColor }]}>Term:</Text>
-					<SearchBar
-						round
-						lightTheme
-						onChangeText={term => this.props.termChanged(term)}
-						placeholder={this.props.term.length === 0 ? 'Search for...' : this.props.term} 
-						containerStyle={[styles.searchBarStyle]}
-						inputStyle={
-							[styles.searchBarInputContainerStyle,
-							{ backgroundColor: this.state.secondColor, 
-								color: this.state.firstColor, 
-								borderColor: this.state.secondColor 
-							}]}
-						noIcon
-					/>
-				</View>
-				<View style={styles.columnContainer}>
-					<Text style={[styles.columnText, { color: this.state.secondColor }]}>Columns</Text>
-					<View style={{ width: 150, alignItems: 'stretch', justifyContent: 'center' }}>
-						<Slider
-							value={this.props.columns}
-							onValueChange={columns => this.props.columnsChanged(columns)} 
-							maximumValue={this.state.sliderMaxValue}
-							minimumValue={this.state.sliderMinValue}
-							step={1}
-							style={{ marginLeft: 20, marginRight: 20 }}
-							maximumTrackTintColor="rgb(231, 255, 22)"
-							minimumTrackTintColor="rgb(255, 20, 141)"
-							thumbTouchSize={{ width: 200, height: 90 }}
-							thumbTintColor={this.state.secondColor}
+			<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+			{this.renderError()}
+				<View style={[styles.containerStyle, { backgroundColor: this.state.firstColor }]}>	
+					<View style={styles.termContainer}>
+						<Text style={[styles.termText, { color: this.state.secondColor }]}>Term:</Text>
+						<View style={styles.searchBarStyle}>
+							<TextInput
+								onChangeText={term => this.props.termChanged(term)}
+								placeholder={'Search for...'} 
+								style={
+									[styles.searchBarInputContainerStyle,
+									{ backgroundColor: this.state.secondColor, 
+										color: this.state.firstColor, 
+										borderColor: this.state.firstColor 
+									}]
+								}
+								value={this.props.term}
+								onSubmitEditing={this.onSubmit}
+								clearButtonMode="always"
+							/>
+						</View>
+					</View>
+					<View style={styles.columnContainer}>
+						<Text style={[styles.columnText, { color: this.state.secondColor }]}>Columns</Text>
+						<View style={{ width: 150, alignItems: 'stretch', justifyContent: 'center', margin: 10 }}>
+							<Slider
+								value={this.props.columns}
+								onValueChange={columns => this.props.columnsChanged(columns)} 
+								maximumValue={this.state.sliderMaxValue}
+								minimumValue={this.state.sliderMinValue}
+								step={1}
+								style={{ marginLeft: 20, marginRight: 20 }}
+								maximumTrackTintColor="rgb(231, 255, 22)"
+								minimumTrackTintColor="rgb(255, 20, 141)"
+								thumbTouchSize={{ width: 200, height: 90 }}
+								thumbTintColor={this.state.secondColor}
+							/>
+						</View>
+						<Text style={[styles.columnText, { color: this.state.secondColor }]}>{this.props.columns}</Text>
+					</View>
+					<View style={[styles.searchButtonStyle, { borderColor: this.state.secondColor }]}>
+						<Button 
+							title="Search"
+							onPress={this.onSubmit}
+							color={this.state.secondColor}
+							textStyle={{ fontSize: 28 }}
+							icon={{
+								name: 'search',
+								size: 50,
+								color: this.state.secondColor
+							}}
+							loading={this.props.loading}
+							transparent
 						/>
 					</View>
-					<Text style={[styles.columnText, { color: this.state.secondColor }]}>{this.props.columns}</Text>
-				</View>
-				<View style={[styles.searchButtonStyle, { borderColor: this.state.secondColor }]}>
-					<Button 
-						title="Search"
-						onPress={this.onButtonPress}
-						color={this.state.secondColor}
-						textStyle={{ fontSize: 28 }}
-						icon={{
-							name: 'search',
-							size: 50,
-							color: this.state.secondColor
-						}}
-						loadingRight={false}
-						transparent
-					/>
-				</View>
-				<View style={styles.switchStyle}> 
-					<Switch
-						onValueChange={value => this.onSwitcherValueChange(value)}
-						value={this.state.switcher}
-						onTintColor={this.state.secondColor}
-					/>
+					<View style={styles.switchStyle}> 
+						<Switch
+							onValueChange={value => this.onSwitcherValueChange(value)}
+							value={this.state.switcher}
+							onTintColor='rgba(50, 50, 50, 0.8)'
+						/>
+					</View>
 				</View>
 			</View>
 		);
@@ -154,30 +158,33 @@ class SearchScreen extends Component {
 }
 
 const mapStateToProps = ({ search }) => {
-	const { term, columns } = search;
+	const { term, columns, loading } = search;
 
-	return { term, columns };
+	return { term, columns, loading };
 };
 
 const styles = {
 	containerStyle: {
 		flex: 1,
-		marginTop: -100,
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginTop: 22
 	},
 	errorStyle: {
 		position: 'absolute',
-		top: 200,
-		alignSelf: 'stretch'
+		top: 300,
+		alignSelf: 'stretch',
+		fontSize: 36
 	},
 	termContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-between'
 	},
 	termText: {
-		fontSize: 16,
-		alignSelf: 'center' 
+		fontSize: 20,
+		alignSelf: 'center',
+		paddingRight: 8,
+		fontWeight: '300'
 	},
 	searchBarStyle: {
 		backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -186,7 +193,7 @@ const styles = {
 		borderBottomWidth: 0
 	},
 	searchBarInputContainerStyle: {
-		fontSize: 16,
+		fontSize: 18,
 		height: 40,
 		borderRadius: 12,
 		borderWidth: 1,
@@ -198,8 +205,9 @@ const styles = {
 		justifyContent: 'space-between',
 	},
 	columnText: { 
-		fontSize: 16, 
-		alignSelf: 'center', 
+		fontSize: 20,
+		alignSelf: 'center',
+		fontWeight: '300' 
 	},
 	searchButtonStyle: {
 		padding: 6,
