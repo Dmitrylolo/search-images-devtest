@@ -9,7 +9,8 @@ import reducers from '../reducers';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['search']
+  whitelist: ['search'],
+  debug: true
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -21,7 +22,10 @@ export default () => {
     compose(
       applyMiddleware(thunk),
     )
-  );
+	);   
+
   let persistor = persistStore(store);
+  //persistor.purge();
+
   return { store, persistor };
 };

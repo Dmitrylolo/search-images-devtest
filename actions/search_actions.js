@@ -3,7 +3,8 @@ import qs from 'qs';
 import {
 	TERM_CHANGED,
 	COLUMNS_CHANGED,
-	FETCH_RESULT
+	FETCH_RESULT,
+	CLEAR_IMAGES
 } from './types';
 
 const SEARCH_ROOT_URL = 'https://www.google.com/search?';
@@ -25,7 +26,7 @@ const buildSearchUrl = term => {
 	return `${SEARCH_ROOT_URL}${query}`;
 };
 
-const getImagesFromHTML = (data) => {
+const getImagesFromHTML = data => {
 	const start = data.indexOf(RESULT_START_TAG, 0);
 	if (start === -1) {
 		return [];
@@ -61,9 +62,9 @@ export const columnsChanged = text => {
 };
 
 export const loadResult = (term, navigate) => async dispatch => {
-	try {
+	try {		
+		//await dispatch({ type: CLEAR_IMAGES });
 		const url = buildSearchUrl(term);
-
 		const { data } = await axios.get(url);
 		const images = getImagesFromHTML(data);
 
