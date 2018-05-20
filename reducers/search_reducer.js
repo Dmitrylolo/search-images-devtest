@@ -57,7 +57,7 @@ const INITIAL_STATE = {
 };
 
 export default (state = INITIAL_STATE, action) => {
-	console.log(action);
+	//console.log(action);
 	switch (action.type) {
 		/*case REHYDRATE: 																								// Crunch on rerux-persist. I dont know why it not works first run. Comment
 			return action.payload.search ? action.payload.search : state;*/	// this REHYDRATE case, then run app, and uncomment block.

@@ -107,7 +107,8 @@ const styles = {
 		fontSize: 23, 
 		paddingTop: 5, 
 		paddingRight: 10, 
-		fontWeight: '200'
+		fontWeight: '300',
+		letterSpacing: 3
 	},
 	imgStyle: { 
 		borderWidth: 1, 
@@ -131,7 +132,6 @@ const styles = {
 	noResultContainer: {
 		marginTop: 250,
 		width: SCREEN_WIDTH
-
 	},
 	noResultsText: {
 		color: '#000000',

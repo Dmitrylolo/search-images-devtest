@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Switch, TextInput } from 'react-native';
+import { View, Text, Switch, TextInput, Dimensions } from 'react-native';
 import { Button, Slider } from 'react-native-elements';
 import { termChanged, columnsChanged, loadResult, switcherChanged } from '../actions';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class SearchScreen extends Component {
 	static navigationOptions = (props) => {
@@ -22,7 +24,7 @@ class SearchScreen extends Component {
 						onPress={() => navigate('result')} 
 						backgroundColor="rgba(0, 0, 0, 0)"
 						color="rgb(255, 20, 141)"
-						fontSize={16}
+						fontSize={18}
 					/>
 			),
 			headerTransparent: true,
@@ -50,16 +52,15 @@ class SearchScreen extends Component {
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.switcher === true) {
 			this.setState({ firstColor: '#000000', secondColor: '#FFFFFF' });
-			console.log(this.state);
 			return null;
 		}
-		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000' });
+		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000'  });
 	}
 
 
 	onTermChange = term => {
 		if (this.state.errorStatus) {
-			this.setState({ erorStatus: false });
+			this.setState({ errorStatus: false });
 		}
 		this.props.termChanged(term);
 	}
@@ -85,9 +86,11 @@ class SearchScreen extends Component {
 	renderError = () => {
 		if (this.state.errorStatus) {
 			return (
-				<Text style={[styles.errorStyle, { color: this.state.secondColor }]}>
-					You forgot to type something in the field bottom. :)
-				</Text>
+					<View style={{ position: 'absolute', top: 100, justifyContent: 'center', alignItems: 'center' }}>
+						<Text style={ { color: 'red', fontSize: 18 }}>
+							Type something below. :)
+						</Text>
+					</View>
 			);
 		}
 	}
@@ -96,26 +99,25 @@ class SearchScreen extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-
-			{this.renderError()}
-				<View style={[styles.containerStyle, { backgroundColor: this.state.firstColor }]}>	
+				<View style={[styles.containerStyle, { backgroundColor: this.state.firstColor }]}>
+				{this.renderError()}	
 					<View style={styles.termContainer}>
 						<Text style={[styles.termText, { color: this.state.secondColor }]}>Term:</Text>
 						<View style={styles.searchBarStyle}>
 							<TextInput
-								onChangeText={term => this.props.termChanged(term)}
+								onChangeText={term => this.onTermChange(term)}
 								placeholder={'Search for...'} 
 								style={
 									[styles.searchBarInputContainerStyle,
 									{ backgroundColor: this.state.secondColor, 
-										color: this.state.firstColor,
-										borderWidth: 0 
+										color: this.state.firstColor, 
+										borderColor: this.state.firstColor 
 									}]
 								}
 								value={this.props.term}
 								onSubmitEditing={this.onSubmit}
-								clearButtonMode='while-editing'
-								underlineColorAndroid='transparent'
+								clearButtonMode="while-editing"
+								textUnderlineAndroid="transparent"
 							/>
 						</View>
 					</View>
@@ -179,10 +181,11 @@ const styles = {
 		marginTop: 22
 	},
 	errorStyle: {
+		width: SCREEN_WIDTH,
 		position: 'absolute',
-		top: 300,
-		alignSelf: 'stretch',
-		fontSize: 36
+		top: 70,
+		alignSelf: 'center', 
+		fontSize: 16
 	},
 	termContainer: {
 		flexDirection: 'row',
@@ -206,7 +209,7 @@ const styles = {
 		borderRadius: 12,
 		borderWidth: 1,
 		borderStyle: 'dashed',
-		paddingLeft: 20
+		paddingLeft: 20,
 	},
 	columnContainer: {
 		flexDirection: 'row',
