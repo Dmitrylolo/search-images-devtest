@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, Text, Switch, TextInput } from 'react-native';
 import { Button, Slider } from 'react-native-elements';
-import { termChanged, columnsChanged, loadResult } from '../actions';
+import { termChanged, columnsChanged, loadResult, switcherChanged } from '../actions';
 
 class SearchScreen extends Component {
 	static navigationOptions = (props) => {
@@ -18,7 +18,7 @@ class SearchScreen extends Component {
 			},
 			headerRight: (
 					<Button 
-						title="Result" 
+						title="Previous result" 
 						onPress={() => navigate('result')} 
 						backgroundColor="rgba(0, 0, 0, 0)"
 						color="rgb(255, 20, 141)"
@@ -34,13 +34,26 @@ class SearchScreen extends Component {
 		sliderMaxValue: 5,
 		errorStatus: false,
 		launch: true,
-		switcher: false,
 		firstColor: '#FFFFFF',
 		secondColor: '#000000'
 	}
 
 	componentWillMount() {
-		console.log(this.state.errorStatus);
+		if (this.props.switcher === true) {
+			this.setState({ firstColor: '#000000', secondColor: '#FFFFFF' });
+			console.log(this.state);
+			return null;
+		}
+		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000' });
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.switcher === true) {
+			this.setState({ firstColor: '#000000', secondColor: '#FFFFFF' });
+			console.log(this.state);
+			return null;
+		}
+		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000' });
 	}
 
 
@@ -66,17 +79,10 @@ class SearchScreen extends Component {
 	}
 
 	onSwitcherValueChange = value => {
-		this.setState({ switcher: value });
-		if (value === true) {
-			this.setState({ firstColor: '#000000', secondColor: '#FFFFFF' });
-			console.log(this.state);
-			return null;
-		}
-		this.setState({ firstColor: '#FFFFFF', secondColor: '#000000' });
+		this.props.switcherChanged(value);
 	}
 
 	renderError = () => {
-		
 		if (this.state.errorStatus) {
 			return (
 				<Text style={[styles.errorStyle, { color: this.state.secondColor }]}>
@@ -90,6 +96,7 @@ class SearchScreen extends Component {
 	render() {
 		return (
 			<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+
 			{this.renderError()}
 				<View style={[styles.containerStyle, { backgroundColor: this.state.firstColor }]}>	
 					<View style={styles.termContainer}>
@@ -101,13 +108,14 @@ class SearchScreen extends Component {
 								style={
 									[styles.searchBarInputContainerStyle,
 									{ backgroundColor: this.state.secondColor, 
-										color: this.state.firstColor, 
-										borderColor: this.state.firstColor 
+										color: this.state.firstColor,
+										borderWidth: 0 
 									}]
 								}
 								value={this.props.term}
 								onSubmitEditing={this.onSubmit}
-								clearButtonMode="always"
+								clearButtonMode='while-editing'
+								underlineColorAndroid='transparent'
 							/>
 						</View>
 					</View>
@@ -147,7 +155,7 @@ class SearchScreen extends Component {
 					<View style={styles.switchStyle}> 
 						<Switch
 							onValueChange={value => this.onSwitcherValueChange(value)}
-							value={this.state.switcher}
+							value={this.props.switcher}
 							onTintColor='rgba(50, 50, 50, 0.8)'
 						/>
 					</View>
@@ -158,9 +166,9 @@ class SearchScreen extends Component {
 }
 
 const mapStateToProps = ({ search }) => {
-	const { term, columns, loading } = search;
+	const { term, columns, loading, switcher } = search;
 
-	return { term, columns, loading };
+	return { term, columns, loading, switcher };
 };
 
 const styles = {
@@ -198,7 +206,7 @@ const styles = {
 		borderRadius: 12,
 		borderWidth: 1,
 		borderStyle: 'dashed',
-		paddingLeft: 20,
+		paddingLeft: 20
 	},
 	columnContainer: {
 		flexDirection: 'row',
@@ -224,4 +232,4 @@ const styles = {
 	}
 };
 
-export default connect(mapStateToProps, { termChanged, columnsChanged, loadResult })(SearchScreen);
+export default connect(mapStateToProps, { termChanged, columnsChanged, loadResult, switcherChanged })(SearchScreen);

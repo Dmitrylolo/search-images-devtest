@@ -101,9 +101,6 @@ const styles = {
 	headerContainer: {
 		height: 40, 
 		marginTop: 22,
-		borderBottomWidth: 1,
-		borderStyle: 'dashed',
-		borderColor: '#000000' 
 	},
 	headerText: { 
 		flex: 1, 

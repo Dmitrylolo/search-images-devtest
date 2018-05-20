@@ -4,7 +4,8 @@ import {
 	TERM_CHANGED,
 	COLUMNS_CHANGED,
 	FETCH_RESULT,
-	LOADING
+	LOADING,
+	SWITCHER_CHANGED
 } from './types';
 
 const SEARCH_ROOT_URL = 'https://www.google.com/search?';
@@ -57,6 +58,13 @@ export const termChanged = text => {
 export const columnsChanged = text => {
 	return {
 		type: COLUMNS_CHANGED,
+		payload: text
+	};
+};
+
+export const switcherChanged = text => {
+	return {
+		type: SWITCHER_CHANGED,
 		payload: text
 	};
 };
