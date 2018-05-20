@@ -16,11 +16,8 @@ const QUERY_PARAMS = {
 
 const RESULT_START_TAG = '<table class="images_table"';
 const RESULT_END_TAG = '/table>';
-const LENGTH_END_TAG = RESULT_END_TAG.length;
 const IMG_START_SRC_ATTR = 'src="';
 const IMG_END_SRC_ATTR = '"';
-const IMG_START_SRC_ATTR_LENGTH = IMG_START_SRC_ATTR.length;
-
 
 const buildSearchUrl = term => {
 	const query = qs.stringify({ ...QUERY_PARAMS, q: term });
@@ -34,13 +31,13 @@ const getImagesFromHTML = data => {
 	}
 
 	const end = data.indexOf(RESULT_END_TAG, start);
-	const imagesTable = data.slice(start, end + LENGTH_END_TAG);
+	const imagesTable = data.slice(start, end + RESULT_END_TAG.length);
 	let startPos = -1;
 	let id = 0;	
 	const images = [];
 	while ((startPos = imagesTable.indexOf(IMG_START_SRC_ATTR, startPos + 1)) !== -1) {
-		const endPos = imagesTable.indexOf(IMG_END_SRC_ATTR, startPos + IMG_START_SRC_ATTR_LENGTH);
-		const imgSrc = imagesTable.slice(startPos + IMG_START_SRC_ATTR_LENGTH, endPos);
+		const endPos = imagesTable.indexOf(IMG_END_SRC_ATTR, startPos + IMG_START_SRC_ATTR.length);
+		const imgSrc = imagesTable.slice(startPos + IMG_START_SRC_ATTR.length, endPos);
 		const image = { id, src: imgSrc };
 		images.push(image);
 		id++;
